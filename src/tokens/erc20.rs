@@ -87,6 +87,18 @@ impl<T: Erc20Params> Erc20<T> {
         evm::log(Transfer { from, to, value });
         Ok(true)
     }
+
+    pub fn _mint(&mut self, address: Address, value: U256) {
+        let mut balance = self.balances.setter(address);
+        let new_balance = balance.get() + value;
+        balance.set(new_balance);
+        self.total_supply.set(self.total_supply.get() + value);
+        evm::log(Transfer {
+            from: Address::ZERO,
+            to: address,
+            value,
+        });
+    }
 }
 
 #[external]
