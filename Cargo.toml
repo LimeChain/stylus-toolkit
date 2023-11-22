@@ -15,7 +15,7 @@ stylus-sdk = "0.4.1"
 wee_alloc = "0.4.5"
 ed25519-compact = { version = "2.0.4", features = [
     "disable-signatures",
-    "opt-size",
+    "opt_size",
 ] }
 
 [features]
