@@ -8,3 +8,6 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 /// The token module exporting Stylus implementations of ERC20 and ERC721 tokens.
 pub mod tokens;
+
+/// The crypto module exporting Stylus implementations of cryptographic primitives.
+pub mod crypto;

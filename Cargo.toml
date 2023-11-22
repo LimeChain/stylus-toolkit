@@ -13,6 +13,11 @@ alloy-primitives = "0.3.1"
 alloy-sol-types = "0.3.1"
 stylus-sdk = "0.4.1"
 wee_alloc = "0.4.5"
+ed25519-compact = "2.0.4"
+
+[dependencies.getrandom]
+version = "0.2.11"
+features = ["js"]
 
 [features]
 export-abi = ["stylus-sdk/export-abi"]
