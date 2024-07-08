@@ -2,10 +2,11 @@ use alloc::{string::String, vec::Vec};
 use core::marker::PhantomData;
 use stylus_sdk::{
     alloy_primitives::{Address, U256},
-    alloy_sol_types::{sol, SolError},
+    alloy_sol_types::{sol},
     evm, msg,
     prelude::*,
 };
+use stylus_sdk::call::MethodError;
 
 /// The ERC20Info trait is used to define the name, symbol, and decimals of an ERC20 token.
 pub trait Erc20Params {
