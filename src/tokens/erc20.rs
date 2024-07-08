@@ -6,7 +6,6 @@ use stylus_sdk::{
     evm, msg,
     prelude::*,
 };
-use stylus_sdk::abi::export::internal::InnerTypes;
 
 /// The ERC20Info trait is used to define the name, symbol, and decimals of an ERC20 token.
 pub trait Erc20Params {
