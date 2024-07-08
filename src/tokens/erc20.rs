@@ -90,46 +90,69 @@ impl<T: Erc20Params> Erc20<T> {
 
 #[external]
 impl<T: Erc20Params> Erc20<T> {
-    /// Immutable token name
-    pub fn name() -> String {
-        T::NAME.into()
+    /// Returns the name of the token.
+    pub fn name() -> Result<String, Vec<u8>> {
+        Ok(T::NAME.into())
     }
 
-    /// Immutable token symbol
-    pub fn symbol() -> String {
-        T::SYMBOL.into()
+    /// Returns the symbol of the token.
+    pub fn symbol() -> Result<String, Vec<u8>> {
+        Ok(T::SYMBOL.into())
     }
 
-    /// Immutable token decimals
-    pub fn decimals() -> u8 {
-        T::DECIMALS
+    /// Returns the number of decimals the token uses.
+    /// The information is used only for display purposes and does not affect
+    /// the arithmetics of the contract.
+    pub fn decimals() -> Result<u8, Vec<u8>> {
+        Ok(T::DECIMALS)
     }
 
-    /// Total supply of tokens
-    pub fn total_supply(&self) -> U256 {
-        self.total_supply.get()
+    /// Returns the total supply of the token.
+    pub fn total_supply(&self) -> Result<U256, Vec<u8>> {
+        Ok(self.total_supply.get())
     }
 
-    /// Balance of `address`
-    pub fn balance_of(&self, owner: Address) -> U256 {
-        self.balances.get(owner)
+    /// Returns the balance of the `account`.
+    pub fn balance_of(&self, account: Address) -> Result<U256, Vec<u8>> {
+        Ok(self.balances.get(account))
     }
 
-    /// Transfers `value` tokens from msg::sender() to `to`
+    /// Returns the amount which `spender` is still allowed to withdraw from `owner`.
+    pub fn allowance(&self, owner: Address, spender: Address) -> Result<U256, Vec<u8>> {
+        Ok(self.allowances.get(owner).get(spender))
+    }
+
+    /// Moves a `value` amount of tokens from the caller's account to `to`.
+    /// Returns a boolean value indicating whether the operation succeeded.
+    /// Emits a {Transfer} event.
     pub fn transfer(&mut self, to: Address, value: U256) -> Result<bool, Erc20Error> {
         self._transfer(msg::sender(), to, value)?;
         Ok(true)
     }
 
-    /// Transfers `value` tokens from `from` to `to`
-    /// (msg::sender() must be able to spend at least `value` tokens from `from`)
+    /// Sets `value` as the allowance of `spender` over the caller's tokens.
+    /// Returns a boolean value indicating whether the operation succeeded.
+    /// Emits an {Approval} event.
+    pub fn approve(&mut self, spender: Address, value: U256) -> Result<bool, Vec<u8>> {
+        self.allowances.setter(msg::sender()).insert(spender, value);
+        evm::log(Approval {
+            owner: msg::sender(),
+            spender,
+            value,
+        });
+        Ok(true)
+    }
+
+    /// Moves `value` amount of tokens from `from` to `to` using the allowance mechanism.
+    /// `value` is then deducted from the caller's allowance.
+    /// Returns a boolean value indicating whether the operation succeeded.
+    /// Emits a {Transfer} event.
     pub fn transfer_from(
         &mut self,
         from: Address,
         to: Address,
         value: U256,
     ) -> Result<bool, Erc20Error> {
-        // Check msg::sender() allowance
         let mut sender_allowances = self.allowances.setter(from);
         let mut allowance = sender_allowances.setter(msg::sender());
         let old_allowance = allowance.get();
@@ -141,13 +164,8 @@ impl<T: Erc20Params> Erc20<T> {
                 want: value,
             }));
         }
-
-        // Decreases allowance
         allowance.set(old_allowance - value);
-
-        // Calls the internal transfer function
         self._transfer(from, to, value)?;
-
         Ok(true)
     }
 }
