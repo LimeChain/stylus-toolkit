@@ -6,6 +6,7 @@ use stylus_sdk::{
     evm, msg,
     prelude::*,
 };
+use stylus_sdk::abi::export::internal::InnerTypes;
 use stylus_sdk::call::MethodError;
 
 /// The ERC20Info trait is used to define the name, symbol, and decimals of an ERC20 token.
@@ -42,11 +43,11 @@ sol! {
     event Approval(address indexed owner, address indexed spender, uint256 value);
 
     /**
-     * Error thrown in case of unsufficient balance during transfer
+     * Error thrown in case of insufficient balance during transfer
      */
     error InsufficientBalance(address from, uint256 have, uint256 want);
     /**
-     * Error thrown in case of unsufficient allowance during transfer
+     * Error thrown in case of insufficient allowance during transfer
      */
     error InsufficientAllowance(address owner, address spender, uint256 have, uint256 want);
 }
@@ -56,14 +57,7 @@ pub enum Erc20Error {
     InsufficientAllowance(InsufficientAllowance),
 }
 
-impl From<Erc20Error> for Vec<u8> {
-    fn from(err: Erc20Error) -> Vec<u8> {
-        match err {
-            Erc20Error::InsufficientBalance(e) => e.encode(),
-            Erc20Error::InsufficientAllowance(e) => e.encode(),
-        }
-    }
-}
+impl InnerTypes for Erc20Error {}
 
 impl<T: Erc20Params> Erc20<T> {
     pub fn _transfer(
