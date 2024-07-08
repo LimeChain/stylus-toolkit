@@ -56,8 +56,6 @@ pub enum Erc20Error {
     InsufficientAllowance(InsufficientAllowance),
 }
 
-impl InnerTypes for Erc20Error {}
-
 impl<T: Erc20Params> Erc20<T> {
     pub fn _transfer(
         &mut self,
