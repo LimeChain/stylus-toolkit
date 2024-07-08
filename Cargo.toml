@@ -18,21 +18,14 @@ mini-alloc = "0.4.2"
 [features]
 export-abi = ["stylus-sdk/export-abi"]
 
-[build]
-target = "wasm32-unknown-unknown"
-
-[target.wasm32-unknown-unknown]
-rustflags = [
-    "-C", "link-arg=-zstack-size=8192", # shrink the heap
-]
+[lib]
+crate-type = ["lib", "cdylib"]
 
 [profile.release]
-codegen-units = 1        # prefer efficiency to compile time
-panic = "abort"          # use simple panics
-opt-level = "z"          # optimize for size
-strip = true             # remove debug info
-lto = true               # link time optimization
-debug = false            # no debug data
-rpath = false            # no run-time search path
-debug-assertions = false # prune debug assertions
-incremental = false      # no incremental builds
+codegen-units = 1
+strip = true
+lto = true
+panic = "abort"
+opt-level = "s"
+
+[workspace]
