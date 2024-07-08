@@ -4,7 +4,7 @@ extern crate alloc;
 
 /// Initializes a custom, global allocator for Rust programs compiled to WASM.
 #[global_allocator]
-static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
+static ALLOC: mini_alloc::MiniAlloc = mini_alloc::MiniAlloc::INIT;
 
 /// The token module exporting Stylus implementations of ERC20 and ERC721 tokens.
 pub mod tokens;
