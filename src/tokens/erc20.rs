@@ -7,7 +7,6 @@ use stylus_sdk::{
     prelude::*,
 };
 use stylus_sdk::abi::export::internal::InnerTypes;
-use stylus_sdk::call::MethodError;
 
 /// The ERC20Info trait is used to define the name, symbol, and decimals of an ERC20 token.
 pub trait Erc20Params {
@@ -51,7 +50,7 @@ sol! {
      */
     error InsufficientAllowance(address owner, address spender, uint256 have, uint256 want);
 }
-
+#[derive(SolidityError)]
 pub enum Erc20Error {
     InsufficientBalance(InsufficientBalance),
     InsufficientAllowance(InsufficientAllowance),
